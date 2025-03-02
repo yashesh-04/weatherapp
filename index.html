@@ -1,13 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Weather App</title>
     <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
     <div class="card">
         <div class="search">
@@ -29,7 +27,6 @@
                         <p>Humidity</p>
                     </div>
                 </div>
-
                 <div class="col">
                     <img src="images/wind.png" alt="humidity">
                     <div>
@@ -40,71 +37,61 @@
             </div>
         </div>
     </div>
-
+    
     <!-- React Code Display -->
     <div class="code-container">
         <h2>React Code Snippet:</h2>
         <pre id="code-snippet">
-import { useEffect, useState } from "react";
-import axios from "axios";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
-const HomePage = () => {
-  const [books, setBooks] = useState([]);
-  const [visibleBooks, setVisibleBooks] = useState(12);
-  const navigate = useNavigate(); // Hook for navigation
+const LandingPage = () => {
+  const navigate = useNavigate();
+  const text = "Welcome to the 📚 Online Bookstore!";
+  const [displayedText, setDisplayedText] = useState("");
+  const [cursorVisible, setCursorVisible] = useState(true);
 
   useEffect(() => {
-    axios
-      .get("/data/books.json")
-      .then((res) => {
-        if (Array.isArray(res.data)) {
-          setBooks(res.data);
-        } else {
-          console.error("Invalid books data:", res.data);
-        }
-      })
-      .catch((err) => console.error("Error fetching books:", err));
+    let index = 0;
+    let tempText = "";
+
+    const interval = setInterval(() => {
+      if (index < text.length) {
+        tempText += text.charAt(index);
+        setDisplayedText(tempText);
+        index++;
+      } else {
+        clearInterval(interval);
+      }
+    }, 100);
+
+    const cursorInterval = setInterval(() => {
+      setCursorVisible((prev) => !prev);
+    }, 500);
+
+    return () => {
+      clearInterval(interval);
+      clearInterval(cursorInterval);
+    };
   }, []);
 
-  const loadMoreBooks = () => {
-    setVisibleBooks((prev) => prev + 12);
-  };
-
   return (
-    &lt;div className="home"&gt;
-      &lt;h2 className="explore-header"&gt;📚 Explore Books&lt;/h2&gt;
-
-      &lt;div className="books-grid"&gt;
-        {books.slice(0, visibleBooks).map((book) => (
-          &lt;div 
-            key={book.id} 
-            className="book-card" 
-            onClick={() => navigate(`/book/${book.id}`)}
-          &gt;
-            &lt;img src={book.coverImage} alt={book.title} /&gt;
-            &lt;h3&gt;{book.title}&lt;/h3&gt;
-            &lt;p&gt;{book.price}&lt;/p&gt;
-          &lt;/div&gt;
-        ))}
-      &lt;/div&gt;
-
-      {visibleBooks &lt; books.length && (
-        &lt;div className="load-more-container"&gt;
-          &lt;button className="load-more" onClick={loadMoreBooks}&gt;
-            Load More
-          &lt;/button&gt;
-        &lt;/div&gt;
-      )}
-    &lt;/div&gt;
+    <div className="landing">
+      <h1>
+        {displayedText}
+        <span className={cursorVisible ? "cursor" : ""}>|</span>
+      </h1>
+      <p>Find, explore, and buy your favorite books with ease.</p>
+      <button onClick={() => navigate("/login")}>Login</button>
+    </div>
   );
 };
 
-export default HomePage;
+export default LandingPage;
         </pre>
         <button onclick="copyCode()">Copy Code</button>
     </div>
-
+    
     <script>
         function copyCode() {
             const code = document.getElementById("code-snippet").innerText;
@@ -113,7 +100,5 @@ export default HomePage;
             });
         }
     </script>
-
 </body>
-
 </html>
