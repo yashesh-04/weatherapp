@@ -45,47 +45,54 @@
     <div class="code-container">
         <h2>React Code Snippet:</h2>
         <pre id="code-snippet">
-import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import { useEffect, useState } from "react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
-const CartPage = ({ cart, setCart }) => {
-  const totalPrice = cart.reduce((acc, book) => acc + parseFloat(book.price.replace("$", "")), 0);
+const HomePage = () => {
+  const [books, setBooks] = useState([]);
+  const [visibleBooks, setVisibleBooks] = useState(12);
+  const navigate = useNavigate(); // Hook for navigation
 
-  const checkout = () => {
-    toast.success("Order Successful! 🎉", { position: "top-right", autoClose: 2000 });
-    setTimeout(() => {
-      setCart([]); // Clear cart after toast disappears
-    }, 2000);
+  useEffect(() => {
+    axios
+      .get("/data/books.json")
+      .then((res) => {
+        if (Array.isArray(res.data)) {
+          setBooks(res.data);
+        } else {
+          console.error("Invalid books data:", res.data);
+        }
+      })
+      .catch((err) => console.error("Error fetching books:", err));
+  }, []);
+
+  const loadMoreBooks = () => {
+    setVisibleBooks((prev) => prev + 12);
   };
 
   return (
-    &lt;div className="cart"&gt;
-      &lt;h2&gt;🛒 Your Cart&lt;/h2&gt;
-      {cart.length &gt; 0 ? (
-        &lt;div className="cart-grid"&gt;
-          {cart.map((book, index) => (
-            &lt;div key={index} className="cart-card"&gt;
-              &lt;img src={book.coverImage} alt={book.title} /&gt;
-              &lt;h3&gt;{book.title}&lt;/h3&gt;
-              &lt;p&gt;{book.price}&lt;/p&gt;
-              &lt;button className="remove-btn" onClick={() => {
-                  setCart(cart.filter((_, i) => i !== index));
-                  toast.info("Item removed!", { position: "top-right", autoClose: 1500 });
-                }}
-              &gt;
-                Remove
-              &lt;/button&gt;
-            &lt;/div&gt;
-          ))}
-        &lt;/div&gt;
-      ) : (
-        &lt;p className="empty-cart"&gt;Your cart is empty.&lt;/p&gt;
-      )}
-      {cart.length &gt; 0 && (
-        &lt;div className="cart-summary"&gt;
-          &lt;h3&gt;Total: &lt;span className="total-price"&gt;${totalPrice.toFixed(2)}&lt;/span&gt;&lt;/h3&gt;
-          &lt;button className="checkout-btn" onClick={checkout}&gt;
-            Checkout
+    &lt;div className="home"&gt;
+      &lt;h2 className="explore-header"&gt;📚 Explore Books&lt;/h2&gt;
+
+      &lt;div className="books-grid"&gt;
+        {books.slice(0, visibleBooks).map((book) => (
+          &lt;div 
+            key={book.id} 
+            className="book-card" 
+            onClick={() => navigate(`/book/${book.id}`)}
+          &gt;
+            &lt;img src={book.coverImage} alt={book.title} /&gt;
+            &lt;h3&gt;{book.title}&lt;/h3&gt;
+            &lt;p&gt;{book.price}&lt;/p&gt;
+          &lt;/div&gt;
+        ))}
+      &lt;/div&gt;
+
+      {visibleBooks &lt; books.length && (
+        &lt;div className="load-more-container"&gt;
+          &lt;button className="load-more" onClick={loadMoreBooks}&gt;
+            Load More
           &lt;/button&gt;
         &lt;/div&gt;
       )}
@@ -93,7 +100,7 @@ const CartPage = ({ cart, setCart }) => {
   );
 };
 
-export default CartPage;
+export default HomePage;
         </pre>
         <button onclick="copyCode()">Copy Code</button>
     </div>
