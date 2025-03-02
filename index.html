@@ -38,67 +38,6 @@
         </div>
     </div>
     
-    <!-- React Code Display -->
-    <div class="code-container">
-        <h2>React Code Snippet:</h2>
-        <pre id="code-snippet">
-import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-
-const LandingPage = () => {
-  const navigate = useNavigate();
-  const text = "Welcome to the 📚 Online Bookstore!";
-  const [displayedText, setDisplayedText] = useState("");
-  const [cursorVisible, setCursorVisible] = useState(true);
-
-  useEffect(() => {
-    let index = 0;
-    let tempText = "";
-
-    const interval = setInterval(() => {
-      if (index < text.length) {
-        tempText += text.charAt(index);
-        setDisplayedText(tempText);
-        index++;
-      } else {
-        clearInterval(interval);
-      }
-    }, 100);
-
-    const cursorInterval = setInterval(() => {
-      setCursorVisible((prev) => !prev);
-    }, 500);
-
-    return () => {
-      clearInterval(interval);
-      clearInterval(cursorInterval);
-    };
-  }, []);
-
-  return (
-    <div className="landing">
-      <h1>
-        {displayedText}
-        <span className={cursorVisible ? "cursor" : ""}>|</span>
-      </h1>
-      <p>Find, explore, and buy your favorite books with ease.</p>
-      <button onClick={() => navigate("/login")}>Login</button>
-    </div>
-  );
-};
-
-export default LandingPage;
-        </pre>
-        <button onclick="copyCode()">Copy Code</button>
-    </div>
-    
-    <script>
-        function copyCode() {
-            const code = document.getElementById("code-snippet").innerText;
-            navigator.clipboard.writeText(code).then(() => {
-                alert("Code copied to clipboard!");
-            });
-        }
-    </script>
+   
 </body>
 </html>
