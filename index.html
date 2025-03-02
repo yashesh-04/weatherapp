@@ -19,8 +19,8 @@
             position: relative;
         }
         pre {
-            white-space: pre-wrap;
-            word-wrap: break-word;
+            white-space: pre;
+            overflow-x: auto;
         }
         .copy-btn {
             position: absolute;
@@ -75,7 +75,11 @@
     <div class="code-container">
         <button class="copy-btn" onclick="copyCode()">Copy Code</button>
         <h2>React Code Snippet:</h2>
-        <pre id="code-snippet">
+        <pre><code id="code-snippet"></code></pre>
+    </div>
+
+    <script>
+        const codeContent = `
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -122,13 +126,12 @@ const LandingPage = () => {
 };
 
 export default LandingPage;
-        </pre>
-    </div>
+        `;
 
-    <script>
+        document.getElementById("code-snippet").innerText = codeContent;
+
         function copyCode() {
-            const code = document.getElementById("code-snippet").innerText;
-            navigator.clipboard.writeText(code).then(() => {
+            navigator.clipboard.writeText(codeContent).then(() => {
                 alert("Code copied to clipboard!");
             });
         }
