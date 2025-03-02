@@ -5,8 +5,41 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Weather App</title>
     <link rel="stylesheet" href="style.css">
+    <style>
+        .code-container {
+            background-color: #1e1e1e;
+            color: #ffffff;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px auto;
+            width: 90%;
+            max-width: 800px;
+            font-family: monospace;
+            overflow-x: auto;
+            position: relative;
+        }
+        pre {
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+        .copy-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #007acc;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        .copy-btn:hover {
+            background: #005f99;
+        }
+    </style>
 </head>
 <body>
+
     <div class="card">
         <div class="search">
             <input type="text" placeholder="Enter City Name" spellcheck="false">
@@ -37,7 +70,69 @@
             </div>
         </div>
     </div>
-    
-   
+
+    <!-- React Code Display -->
+    <div class="code-container">
+        <button class="copy-btn" onclick="copyCode()">Copy Code</button>
+        <h2>React Code Snippet:</h2>
+        <pre id="code-snippet">
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+
+const LandingPage = () => {
+  const navigate = useNavigate();
+  const text = "Welcome to the 📚 Online Bookstore!";
+  const [displayedText, setDisplayedText] = useState("");
+  const [cursorVisible, setCursorVisible] = useState(true);
+
+  useEffect(() => {
+    let index = 0;
+    let tempText = "";
+
+    const interval = setInterval(() => {
+      if (index < text.length) {
+        tempText += text.charAt(index);
+        setDisplayedText(tempText);
+        index++;
+      } else {
+        clearInterval(interval);
+      }
+    }, 100);
+
+    const cursorInterval = setInterval(() => {
+      setCursorVisible((prev) => !prev);
+    }, 500);
+
+    return () => {
+      clearInterval(interval);
+      clearInterval(cursorInterval);
+    };
+  }, []);
+
+  return (
+    <div className="landing">
+      <h1>
+        {displayedText}
+        <span className={cursorVisible ? "cursor" : ""}>|</span>
+      </h1>
+      <p>Find, explore, and buy your favorite books with ease.</p>
+      <button onClick={() => navigate("/login")}>Login</button>
+    </div>
+  );
+};
+
+export default LandingPage;
+        </pre>
+    </div>
+
+    <script>
+        function copyCode() {
+            const code = document.getElementById("code-snippet").innerText;
+            navigator.clipboard.writeText(code).then(() => {
+                alert("Code copied to clipboard!");
+            });
+        }
+    </script>
+
 </body>
 </html>
