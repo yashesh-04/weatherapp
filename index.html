@@ -37,57 +37,74 @@
                         <p>Wind Speed</p>
                     </div>
                 </div>
-
             </div>
         </div>
     </div>
 
+    <!-- React Code Display -->
+    <div class="code-container">
+        <h2>React Code Snippet:</h2>
+        <pre id="code-snippet">
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
+const CartPage = ({ cart, setCart }) => {
+  const totalPrice = cart.reduce((acc, book) => acc + parseFloat(book.price.replace("$", "")), 0);
+
+  const checkout = () => {
+    toast.success("Order Successful! 🎉", { position: "top-right", autoClose: 2000 });
+    setTimeout(() => {
+      setCart([]); // Clear cart after toast disappears
+    }, 2000);
+  };
+
+  return (
+    &lt;div className="cart"&gt;
+      &lt;h2&gt;🛒 Your Cart&lt;/h2&gt;
+      {cart.length &gt; 0 ? (
+        &lt;div className="cart-grid"&gt;
+          {cart.map((book, index) => (
+            &lt;div key={index} className="cart-card"&gt;
+              &lt;img src={book.coverImage} alt={book.title} /&gt;
+              &lt;h3&gt;{book.title}&lt;/h3&gt;
+              &lt;p&gt;{book.price}&lt;/p&gt;
+              &lt;button className="remove-btn" onClick={() => {
+                  setCart(cart.filter((_, i) => i !== index));
+                  toast.info("Item removed!", { position: "top-right", autoClose: 1500 });
+                }}
+              &gt;
+                Remove
+              &lt;/button&gt;
+            &lt;/div&gt;
+          ))}
+        &lt;/div&gt;
+      ) : (
+        &lt;p className="empty-cart"&gt;Your cart is empty.&lt;/p&gt;
+      )}
+      {cart.length &gt; 0 && (
+        &lt;div className="cart-summary"&gt;
+          &lt;h3&gt;Total: &lt;span className="total-price"&gt;${totalPrice.toFixed(2)}&lt;/span&gt;&lt;/h3&gt;
+          &lt;button className="checkout-btn" onClick={checkout}&gt;
+            Checkout
+          &lt;/button&gt;
+        &lt;/div&gt;
+      )}
+    &lt;/div&gt;
+  );
+};
+
+export default CartPage;
+        </pre>
+        <button onclick="copyCode()">Copy Code</button>
+    </div>
+
     <script>
-        const apiKey = "a86d0a05280fd058cff224a06cb6b73b";
-        const apiURL = "https://api.openweathermap.org/data/2.5/weather?units=metric&q=";
-        const searchBox = document.querySelector(".search input");
-        const searchBtn = document.querySelector(".search button");
-        const weatherIcon = document.querySelector(".weather-icon")
-
-
-        async function checkWeather(city) {
-            const response = await fetch(apiURL + city+ `&appid=${apiKey}`);
-            
-            if(response.status == 404){
-                document.querySelector(".error").style.display = "block";
-                document.querySelector(".weather").style.display = "none";
-            }else{
-                var data = await response.json();
-
-            document.querySelector(".city").innerHTML = data.name;
-            document.querySelector(".temp").innerHTML = Math.round(data.main.temp) + "°c";
-            document.querySelector(".humidity").innerHTML = data.main.humidity + "%";
-            document.querySelector(".wind").innerHTML = data.wind.speed + " km/h";
-            
-            if(data.weather[0].main == "Clouds"){
-                weatherIcon.src= "images/clouds.png";
-            }else if(data.weather[0].main == "Clear"){
-                weatherIcon.src= "images/clear.png";
-            }else if(data.weather[0].main == "Rain"){
-                weatherIcon.src= "images/rain.png";
-            }else if(data.weather[0].main == "Drizzle"){
-                weatherIcon.src= "images/drizzle.png";
-            }else if(data.weather[0].main == "Mist"){
-                weatherIcon.src= "images/mist.png";
-            }
-            
-            document.querySelector(".weather").style.display= "block";
-            document.querySelector(".error").style.display= "none";
-
-            }        
-        } 
-
-        searchBtn.addEventListener("click", ()=>{
-            checkWeather(searchBox.value);
-        });
-
-        
-
+        function copyCode() {
+            const code = document.getElementById("code-snippet").innerText;
+            navigator.clipboard.writeText(code).then(() => {
+                alert("Code copied to clipboard!");
+            });
+        }
     </script>
 
 </body>
